@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 
-function BookInfo(props, { children }) {
+function BookInfo(props) {
   return (
     <div className="card text-dark">
       <div className="card-body">
