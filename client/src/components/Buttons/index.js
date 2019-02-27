@@ -1,12 +1,15 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export function ViewBtn(props) {
   return (
-    <button {...props}
-      type="button" className="btn view-btn mx-1 px-4"
-      style={{ backgroundColor: "#FFC20E" }}>
-      View
-   </button>
+    <a className="info-link" href={props.link}>
+      <button
+        type="button" className="btn view-btn mx-1 px-4"
+        style={{ backgroundColor: "#FFC20E" }}>
+        View
+      </button>
+    </a>
   );
 };
 
