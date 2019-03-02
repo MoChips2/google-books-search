@@ -20,7 +20,7 @@ function BookInfo(props) {
 
 export function Image(props) {
   return (
-    <img alt={props.name} src={props.image} className="images px-4 py-3" style={{ float: "left" }} />
+    <img alt={props.name} src={`${props.image}`} className="images px-4 py-3" style={{ float: "left" }} />
   )
 };
 

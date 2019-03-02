@@ -33,20 +33,16 @@ class Search extends Component {
     event.preventDefault();
     API.searchBook(this.state.search)
       .then(res => {
-        let volume = res.data.items[0].volumeInfo
-        this.setState({
-          books: volume,
-          title: volume.title,
-          author: volume.authors[0],
-          desc: volume.description,
-          image: volume.imageLinks.thumbnail,
-          link: volume.infoLink
-        });
+        console.log(res);
+        this.setState({ 
+          books: res.data.items
+         });
         console.log(this.state.books);
-        console.log(this.state.link)
       })
       .catch(err => console.log(err));
   };
+
+
 
   saveBookinDB = () => {
     API.saveBook({
@@ -86,41 +82,39 @@ class Search extends Component {
         </Row>
         <Row>
           <Col size="md-12">
-            <ViewCard>
-              <h4>Results</h4>
-              <BookInfo
-                /* title="Harry Potter and the Nobody Cares"
-                 author="Written By: JK Rowling"
-                 image={
-                   <Image
-                     name="Harry Potter"
-                     image="https://static.abebookscdn.com/cdn/com/images/harry-potter/books/sorcerers-stone-US.jpg"
-                   />}
-                   <Desc desc="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
-                 */
-                title={this.state.title}
-                author={this.state.author}
-                image={
-                  <Image
-                    name={this.state.title}
-                    image={this.state.image}
-                  />}
-                desc={<Desc
-                  desc={this.state.desc}
-                />}
-                btnLeft={
-                  <ViewBtn 
-                    link={this.state.link}
-                  />
-                }
-                btnRight={
-                  <SaveBtn
-                    onClick={this.saveBookinDB}
-                  />}
-
-              >
-              </BookInfo>
-            </ViewCard>
+            {this.state.books.length ? (
+              <ViewCard>
+                <h4>Results</h4>
+                {this.state.books.map(book => (
+                  <BookInfo
+                    key={book.id}
+                    title={book.volumeInfo.title}
+                    author={book.volumeInfo.authors}
+                    image={
+                      <Image
+                        name={book.volumeInfo.title}
+                        image={book.volumeInfo.imageLinks.thumbnail}
+                      />}
+                    desc={<Desc
+                      desc={book.volumeInfo.description}
+                    />}
+                    btnLeft={
+                      <ViewBtn
+                        link={book.volumeInfo.infoLink}
+                      />
+                    }
+                    btnRight={
+                      <SaveBtn
+                        onClick={this.saveBookinDB}
+                      />}
+                  >
+                  </BookInfo>
+                ))}
+              </ViewCard>
+            ) : (
+              ""
+              )
+            }
           </Col>
         </Row>
       </Container>

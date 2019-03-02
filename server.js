@@ -4,6 +4,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3001;
 const app = express();
+const routes = require("./routes");
 
 // Define middleware here
 app.use(logger("dev"));
@@ -18,7 +19,7 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/googlebooks";
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
 // Define API routes here
-
+app.use(routes);
 // Send every other request to the React app
 // Define any API routes before this runs
 app.get("*", (req, res) => {
