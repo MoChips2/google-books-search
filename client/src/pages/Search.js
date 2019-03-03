@@ -4,8 +4,7 @@ import { Col, Row, Container } from "../components/Grid";
 import BookSearch from "../components/BookSearch";
 import { Input, SearchBtn } from "../components/Form";
 import ViewCard from "../components/Card";
-import BookInfo, { Image, Desc } from "../components/BookInfo";
-import { ViewBtn, SaveBtn } from "../components/Buttons";
+import {BookInfo} from "../components/BookInfo";
 import API from "../utils/API";
 
 
@@ -38,21 +37,25 @@ class Search extends Component {
           books: res.data.items
          });
         console.log(this.state.books);
+        console.log(this.state.title);
       })
       .catch(err => console.log(err));
   };
 
-
-
-  saveBookinDB = () => {
+  saveBookinDB = (data) => {
+    console.log(data);
     API.saveBook({
-      title: this.state.title,
-      author: this.state.author,
-      desc: this.state.desc,
-      image: this.state.image,
-      link: this.state.link
+      title: data.title,
+      author: data.author,
+      desc: data.desc,
+      image: data.image,
+      link: data.link,
+      savedBook: true
     })
-      .then(res => console.log(res))
+      .then(res => 
+        console.log(res),
+        alert("Book has been saved!")
+      )
       .catch(err => console.log(err));
   }
 
@@ -90,31 +93,15 @@ class Search extends Component {
                     key={book.id}
                     title={book.volumeInfo.title}
                     author={book.volumeInfo.authors}
-                    image={
-                      <Image
-                        name={book.volumeInfo.title}
-                        image={book.volumeInfo.imageLinks.thumbnail}
-                      />}
-                    desc={<Desc
-                      desc={book.volumeInfo.description}
-                    />}
-                    btnLeft={
-                      <ViewBtn
-                        link={book.volumeInfo.infoLink}
-                      />
-                    }
-                    btnRight={
-                      <SaveBtn
-                        onClick={this.saveBookinDB}
-                      />}
+                    image={book.volumeInfo.imageLinks.thumbnail}
+                    desc={book.volumeInfo.description}
+                    link={book.volumeInfo.infoLink}
+                    savebook={this.saveBookinDB}
                   >
                   </BookInfo>
                 ))}
               </ViewCard>
-            ) : (
-              ""
-              )
-            }
+            ) : ("")}
           </Col>
         </Row>
       </Container>

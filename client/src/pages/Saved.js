@@ -2,17 +2,45 @@ import React, { Component } from "react";
 import Jumbotron from "../components/Jumbotron";
 import { Col, Row, Container } from "../components/Grid";
 import ViewCard from "../components/Card";
-import BookInfo, { Image, Desc } from "../components/BookInfo";
-import { ViewBtn, DeleteBtn } from "../components/Buttons";
+import { StoredBooks } from "../components/BookInfo";
+import API from "../utils/API";
 
 class Saved extends Component {
 
   state = {
+    _id: "",
     books: [],
     title: "",
     author: "",
     desc: "",
-    image: ""
+    image: "",
+    link: "",
+    savedBook: false
+  };
+
+  componentDidMount() {
+    this.getSavedBooks();
+    ;
+  }
+
+  getSavedBooks = () => {
+    API.getBooks()
+      .then(res => {
+        console.log(res);
+        let data = res.data;
+        this.setState({
+          books: data,
+          savedBook: data.savedBook
+        })
+        console.log(this.state.books);
+      })
+      .catch(err => console.log(err));
+  };
+
+  deleteBook = (id) => {
+    API.deleteBook(id)
+      .then(() => this.getSavedBooks())
+      .catch(err => console.log(err));
   };
 
   render() {
@@ -28,25 +56,24 @@ class Saved extends Component {
         </Row>
         <Row>
           <Col size="md-12">
-            <ViewCard>
-              <h4>Saved Books</h4>
-              <BookInfo 
-                title="Harry Potter and the Nobody Cares"
-                author="Written By: JK Rowling"
-                image={
-                <Image 
-                name="Harry Potter"
-                image= "https://static.abebookscdn.com/cdn/com/images/harry-potter/books/sorcerers-stone-US.jpg"
-                />}
-                name="Harry"
-                btnLeft={<ViewBtn/>}
-                btnRight={<DeleteBtn/>}
-                desc={
-                <Desc desc="But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"
-                />}
-              >
-              </BookInfo> 
-            </ViewCard>
+            {this.state.books.length ? (
+              <ViewCard>
+                <h4>Saved Books</h4>
+                {this.state.books.map(book => (
+                  <StoredBooks
+                    key={book._id}
+                    _id={book._id}
+                    title={book.title}
+                    author={book.author}
+                    image={book.image}
+                    desc={book.desc}
+                    link={book.link}
+                    deletebook={this.deleteBook}
+                  >
+                  </StoredBooks>
+                ))}
+              </ViewCard>
+            ) : ("")}
           </Col>
         </Row>
       </Container>
